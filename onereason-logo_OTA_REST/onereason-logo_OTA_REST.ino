@@ -51,15 +51,7 @@ void setup() {
 
   setup_wifi();
   setup_OTA();
-
-  if (MDNS.begin(host)) {
-    Serial.println("MDNS responder started");
-  }
-
-  server.on("/light", HTTP_GET, handleGET);
-  server.on("/light", HTTP_POST, handlePOST);
-  server.onNotFound(handleNotFound);
-  server.begin();
+  setup_REST();
 }
 
 void setup_wifi() {
@@ -69,6 +61,10 @@ void setup_wifi() {
 
   while (WiFi.waitForConnectResult() != WL_CONNECTED) {
     WiFi.begin(ssid, password);
+  }
+
+  if (MDNS.begin(host)) {
+    Serial.println("MDNS responder started");
   }
 }
 
@@ -102,6 +98,13 @@ void setup_OTA() {
 
   /* setup the OTA server */
   ArduinoOTA.begin();
+}
+
+void setup_REST() {
+  server.on("/light", HTTP_GET, handleGET);
+  server.on("/light", HTTP_POST, handlePOST);
+  server.onNotFound(handleNotFound);
+  server.begin();
 }
 
 // return state as JSON
